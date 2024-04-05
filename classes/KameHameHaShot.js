@@ -3,6 +3,7 @@ import CollisionHandler from "./CollisionHandler"
 import { State } from "./CharacterBase"
 import { enemies } from "../main"
 class KameHameHaShot {
+    static kiConsumed = 25
     constructor(character, position, speed) {
         this.character = character
         this.position = {

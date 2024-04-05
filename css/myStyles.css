@@ -8,3 +8,6 @@
 #health::-moz-progress-bar { background-color: rgb(206, 2, 2); }
 #health::-webkit-progress-value { background-color: rgb(206, 2, 2); }
 #health { background-color: rgb(206, 2, 2); }
+#ki::-moz-progress-bar { background-color: rgb(18, 98, 218); }
+#ki::-webkit-progress-value { background-color: rgb(18, 98, 218); }
+#ki { background-color: rgb(18, 98, 218); }

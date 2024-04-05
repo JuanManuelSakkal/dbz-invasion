@@ -3,7 +3,7 @@ import Time from "./Time"
 import CollisionHandler from "./CollisionHandler"
 import { enemies } from "../main"
 class KiProjectile {
-
+    static kiConsumed = 10
     constructor(character) {
         this.character = character
         this.position = {

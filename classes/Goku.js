@@ -20,9 +20,13 @@ class Goku extends CharacterBase{
         this.kameHameHaTimer = 0
         this.kameHameHaChargingTime = 1000
         this.collisionHandler = new CollisionHandler(this, {x: 42, y: 50})
+        this.kiChargingSpeed = 0.5
 
         //stats
         this.health = 100
+        this.maxHealth = 100
+        this.ki = 100
+        this.maxKi = 100
     }
     setState(newState){
 
@@ -47,6 +51,7 @@ class Goku extends CharacterBase{
 
         //charging kamehameha
         if(newState == State.chargeKameHameHa && this.state == State.kameHameHaFullCharged) return
+        if(newState == State.chargeKameHameHa && this.ki < KameHameHaShot.kiConsumed) return
 
         //firing kamehameha
         if(newState == State.firingKameHameHa){
@@ -90,14 +95,20 @@ class Goku extends CharacterBase{
             case State.firingKameHameHa:
                 this.speed.y = 0
                 if(!this.kameHameHaShot){
-                    console.log("asd")
+                    this.ki -= KameHameHaShot.kiConsumed
                     this.kameHameHaShot = new KameHameHaShot(this, {x: 57, y: 6}, {x: 5, y: 0})
                 }
                 break
             case State.firingKameHameHaFullCharged:
                 this.speed.y = 0
-                if(!this.kameHameHaShot)
+                if(!this.kameHameHaShot){
+                    this.ki -= KameHameHaShot.kiConsumed
                     this.kameHameHaShot = new KameHameHaShot(this, {x: 62, y: -7}, {x: 5, y: 0})
+                }
+                break
+            case State.kiUp:
+                this.ki += this.kiChargingSpeed * Time.deltaTime/10
+                this.ki = this.ki > this.maxKi ? this.maxKi : this.ki
                 break
         }
 
@@ -143,6 +154,7 @@ class Goku extends CharacterBase{
     }
     spawnKiProjectile(){
         if(this.projectileTimer > this.projectileSpawnRate){
+            this.ki -= KiProjectile.kiConsumed
             this.projectiles.push(new KiProjectile(this))
             this.projectileTimer = 0
         }
@@ -197,7 +209,11 @@ class Goku extends CharacterBase{
     }
     
     kiShot(){
-        this.setState(State.kiShot)
+        if(this.ki >= KiProjectile.kiConsumed){
+            this.setState(State.kiShot)
+        } else {
+            this.setState(State.idle)
+        }
     }
 
 
