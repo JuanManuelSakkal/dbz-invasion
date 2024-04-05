@@ -11,6 +11,8 @@ class Cell extends CharacterBase{
         this.timeToRecover = 500
         this.timeToDisapear = 3000
         this.damageToKnock = 50
+        this.reachedEnd = false
+        this.damage = 20
     }
 
     setState(newState){
@@ -41,6 +43,10 @@ class Cell extends CharacterBase{
         switch(this.state){
             case State.movingLeft:
                 this.move()
+                if(this.position.x < 0){
+                    this.reachedEnd = true
+
+                }
                 break
             case State.takingDamage:
                 this.takingDamageTimer += Time.deltaTime

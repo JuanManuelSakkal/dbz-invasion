@@ -16,6 +16,18 @@ const goku = new Goku(ctx)
 export const enemies = []
 const enemySpawner = new EnemySpawner(ctx, enemies)
 
+const HEALTH_BAR_ID = "health"
+
+function setBar(id, value, maxValue){
+  const bar = document.getElementById(id)
+  bar.value = value
+  bar.max = maxValue
+}
+
+function setHealthBar(health, maxHealth){
+  setBar(HEALTH_BAR_ID, health, maxHealth)
+}
+
 function draw(){
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
   //ctx.drawImage(playerImage, spriteOffsetX, spriteOffsetY, spriteWidth, spriteHeight, 0, 0, spriteWidth*2, spriteHeight*2)
@@ -29,10 +41,15 @@ function update(time){
   enemySpawner.spawnEnemyOnInterval("cell", 1500)
 
   goku.update()
+  setHealthBar(goku.health, goku.maxHealth)
+
   enemies.forEach((enemy, index) => {
     enemy.update()
     enemy.draw()
-    if(enemy.deathTimer > enemy.timeToDisapear || enemy.position.x < 0){
+    if(enemy.deathTimer > enemy.timeToDisapear || enemy.reachedEnd){
+      if(enemy.reachedEnd){
+        goku.health -= enemy.damage
+      }
       enemies.splice(index, 1)
     }
   })

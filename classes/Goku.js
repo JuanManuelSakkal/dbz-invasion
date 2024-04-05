@@ -7,7 +7,6 @@ import { CANVAS_HEIGHT, CANVAS_WIDTH } from "../main"
 import CharacterBase, { State } from "./CharacterBase"
 import CollisionHandler from "./CollisionHandler"
 
-
 class Goku extends CharacterBase{
     constructor(ctx) {
         super(ctx, {x: 0, y: 0}, {x: 0, y: 0}, 100, new GokuDrawer(ctx))
@@ -21,6 +20,9 @@ class Goku extends CharacterBase{
         this.kameHameHaTimer = 0
         this.kameHameHaChargingTime = 1000
         this.collisionHandler = new CollisionHandler(this, {x: 42, y: 50})
+
+        //stats
+        this.health = 100
     }
     setState(newState){
 

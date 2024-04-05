@@ -1,9 +1,10 @@
 #canvas1 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    display: block;
     width: 600px;
     height: 600px;
     border: 1px solid black;
 }
+
+#health::-moz-progress-bar { background-color: rgb(206, 2, 2); }
+#health::-webkit-progress-value { background-color: rgb(206, 2, 2); }
+#health { background-color: rgb(206, 2, 2); }
