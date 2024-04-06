@@ -27,6 +27,9 @@ class Goku extends CharacterBase{
         this.maxHealth = 100
         this.ki = 100
         this.maxKi = 100
+        this.level = 1
+        this.experience = 0
+        this.experienceToNextLevel = 100
     }
     setState(newState){
 
@@ -51,7 +54,6 @@ class Goku extends CharacterBase{
 
         //charging kamehameha
         if(newState == State.chargeKameHameHa && this.state == State.kameHameHaFullCharged) return
-        if(newState == State.chargeKameHameHa && this.ki < KameHameHaShot.kiConsumed) return
 
         //firing kamehameha
         if(newState == State.firingKameHameHa){
@@ -64,11 +66,27 @@ class Goku extends CharacterBase{
             }
         }
 
-        if(newState != State.firingKameHameHaFullCharged && newState != State.firingKameHameHaFullCharged){
+        if(newState != State.firingKameHameHa && newState != State.firingKameHameHaFullCharged){
             this.kameHameHaShot = null
         }
 
         this.state = newState
+    }
+
+    levelUp(){
+        this.level += 1
+        this.experienceToNextLevel *= 1.2  
+        this.experience = 0
+        this.ki = this.maxKi
+        this.health = this.maxHealth
+
+    }
+
+    gainExperience(exp){
+        this.experience += exp
+        if(this.experience >= this.experienceToNextLevel){
+            this.levelUp()
+        }
     }
 
     blinkLeft(){
@@ -110,6 +128,7 @@ class Goku extends CharacterBase{
             case State.firingKameHameHa:
                 this.speed.y = 0
                 if(!this.kameHameHaShot){
+                    console.log(this.kameHameHaShot)
                     this.ki -= KameHameHaShot.kiConsumed
                     this.kameHameHaShot = new KameHameHaShot(this, {x: 57, y: 6}, {x: 5, y: 0})
                 }
@@ -176,7 +195,9 @@ class Goku extends CharacterBase{
     }
 
     chargeKameHameHa(){
-        this.setState(State.chargeKameHameHa)
+        if(this.ki >= KameHameHaShot.kiConsumed){
+            this.setState(State.chargeKameHameHa)
+        }
     }
 
     fireKameHameHa(){

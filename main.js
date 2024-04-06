@@ -18,6 +18,7 @@ const enemySpawner = new EnemySpawner(ctx, enemies)
 
 const HEALTH_BAR_ID = "health"
 const KI_BAR_ID = "ki"
+const EXP_BAR_ID = "exp"
 
 const DOUBLE_TAP_WINDOW = 300
 let lastKeydown = null
@@ -46,9 +47,20 @@ function setKiBar(ki, maxKi){
   setBar(KI_BAR_ID, ki, maxKi)
 }
 
+function setExpBar(exp, maxExp){
+  setBar(EXP_BAR_ID, exp, maxExp)
+}
+
 function setBars(character){
   setHealthBar(character.health, character.maxHealth)
   setKiBar(character.ki, character.maxKi)
+  setExpBar(character.experience, character.experienceToNextLevel)
+}
+
+function setHUD(goku){
+  document.getElementById("cell_count").innerHTML = cellsKilled
+  document.getElementById("level").innerHTML = goku.level
+  setBars(goku)
 }
 
 function drawBackground(){
@@ -67,7 +79,7 @@ function update(time){
   Time.setTime(time ?? 0)
   draw()
 
-  enemySpawner.spawnEnemyOnInterval("cell", 2500)
+  enemySpawner.spawnEnemyOnInterval("cell", 4000)
 
   goku.update()
 
@@ -80,13 +92,13 @@ function update(time){
       }
       if(enemy.deathTimer > enemy.timeToDisapear ){
         cellsKilled++
-        document.getElementById("cell_count").innerHTML = cellsKilled
+        goku.gainExperience(enemy.expDrop)
       }
       enemies.splice(index, 1)
     }
     
   })
-  setBars(goku)
+  setHUD(goku)
   goku.draw()
   if(goku.health <= 0){
     alert("You Lost")
@@ -96,15 +108,18 @@ function update(time){
 }
 
 function isDoubleTap(e) {
-  if (lastKeydown && lastKeyUp && 
-    lastKeydown.key == e.key && e.key == lastKeyUp.key && 
-    e.timeStamp - lastKeyUp.timeStamp < DOUBLE_TAP_WINDOW &&
-    e.timeStamp - lastKeydown.timeStamp < DOUBLE_TAP_WINDOW) {
-    lastKeydown = null
-    return true
+  let isDT = false
+  if(lastKeydown && lastKeydown.key == e.key) {
+    if(e.timeStamp - lastKeydown.timeStamp > DOUBLE_TAP_WINDOW) {
+      lastKeydown = e
+    } else if(lastKeyUp && lastKeyUp.key == e.key && e.timeStamp - lastKeyUp.timeStamp < DOUBLE_TAP_WINDOW) {
+        isDT = true
+        lastKeyUp = null
+    }
+  } else{
+    lastKeydown = e
   }
-  lastKeydown = e
-  return false
+  return isDT
 }
 
 document.addEventListener('keydown', e => {

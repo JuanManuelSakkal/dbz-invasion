@@ -13,6 +13,7 @@ class Cell extends CharacterBase{
         this.damageToKnock = 50
         this.reachedEnd = false
         this.damage = 20
+        this.expDrop = 10
     }
 
     setState(newState){
