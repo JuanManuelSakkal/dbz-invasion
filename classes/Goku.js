@@ -71,7 +71,22 @@ class Goku extends CharacterBase{
         this.state = newState
     }
 
-
+    blinkLeft(){
+        this.setState(State.blinkHorizontal)
+        this.position.x -= 100
+    }
+    blinkRight(){
+        this.setState(State.blinkHorizontal)
+        this.position.x += 100
+    }
+    blinkUp(){
+        this.setState(State.blinkVertical)
+        this.position.y -= 100
+    }
+    blinkDown(){
+        this.setState(State.blinkVertical)
+        this.position.y += 100
+    }
     move(){
         this.position.x += this.speed.x * Time.deltaTime/10
         this.position.y += this.speed.y * Time.deltaTime/10

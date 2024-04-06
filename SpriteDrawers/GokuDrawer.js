@@ -29,11 +29,17 @@ class GokuDrawer{
             case State.idle:
                 this.movementDrawer.drawIdle(goku) 
                 break
-            case "movingLeft":
+            case State.movingLeft:
                 this.movementDrawer.drawMovingLeft(goku)
                 break
-            case "movingRight":
+            case State.movingRight:
                 this.movementDrawer.drawMovingRight(goku)
+                break
+            case State.blinkHorizontal:
+                this.movementDrawer.drawBlinkHorizontal(goku)
+                break
+            case State.blinkVertical:
+                this.movementDrawer.drawBlinkVertical(goku)
                 break
             case State.baseAttack:
                 this.baseAttacksDrawer.drawAttack(goku)

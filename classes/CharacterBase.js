@@ -3,6 +3,8 @@ export const State = {
     idle: "idle",
     movingLeft: "movingLeft",
     movingRight: "movingRight",
+    blinkVertical: "blinkVertical",
+    blinkHorizontal: "blinkHorizontal",
     baseAttack: "baseAttack",
     kiUp: "kiUp",
     kiShot: "kiShot",
@@ -36,7 +38,7 @@ class CharacterBase {
 
     moveRight() {
         this.setState(State.movingRight)
-        this.speed.x = 1   
+        this.speed.x = 1  
     }
 
     moveUp() {

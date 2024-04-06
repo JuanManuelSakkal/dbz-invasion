@@ -19,6 +19,10 @@ const enemySpawner = new EnemySpawner(ctx, enemies)
 const HEALTH_BAR_ID = "health"
 const KI_BAR_ID = "ki"
 
+const DOUBLE_TAP_WINDOW = 300
+let lastKeydown = null
+let lastKeyUp = null
+
 let cellsKilled = 0
 
 function resetGame(){
@@ -66,7 +70,6 @@ function update(time){
   enemySpawner.spawnEnemyOnInterval("cell", 2500)
 
   goku.update()
-  setBars(goku)
 
   enemies.forEach((enemy, index) => {
     enemy.update()
@@ -74,10 +77,6 @@ function update(time){
     if(enemy.deathTimer > enemy.timeToDisapear || enemy.reachedEnd){
       if(enemy.reachedEnd){
         goku.health -= enemy.damage
-        if(goku.health <= 0){
-          alert("You Lost")
-          resetGame()
-        }
       }
       if(enemy.deathTimer > enemy.timeToDisapear ){
         cellsKilled++
@@ -85,23 +84,42 @@ function update(time){
       }
       enemies.splice(index, 1)
     }
+    
   })
+  setBars(goku)
   goku.draw()
+  if(goku.health <= 0){
+    alert("You Lost")
+    resetGame()
+  }
   window.requestAnimationFrame(update)
 }
 
+function isDoubleTap(e) {
+  if (lastKeydown && lastKeyUp && 
+    lastKeydown.key == e.key && e.key == lastKeyUp.key && 
+    e.timeStamp - lastKeyUp.timeStamp < DOUBLE_TAP_WINDOW &&
+    e.timeStamp - lastKeydown.timeStamp < DOUBLE_TAP_WINDOW) {
+    lastKeydown = null
+    return true
+  }
+  lastKeydown = e
+  return false
+}
+
 document.addEventListener('keydown', e => {
+  const isDT = isDoubleTap(e)
   if (e.key === 'a') {
-    goku.moveLeft()
+    isDT ? goku.blinkLeft() : goku.moveLeft()
   }
   if (e.key === 'd') {
-    goku.moveRight()
+    isDT ? goku.blinkRight() : goku.moveRight()
   }
   if (e.key === 'w') {
-    goku.moveUp()
+    isDT ? goku.blinkUp() : goku.moveUp()
   }
   if (e.key === 's') {
-    goku.moveDown()
+    isDT ? goku.blinkDown() : goku.moveDown()
   }
   if (e.key === 'q') {
     goku.kiUp()
@@ -116,6 +134,7 @@ document.addEventListener('keydown', e => {
 })
 
 document.addEventListener('keyup', e => {
+  lastKeyUp = e
   if(e.key === "a" || e.key === "d"){  
     goku.stopX()
   }
