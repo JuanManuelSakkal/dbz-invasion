@@ -31,7 +31,7 @@ let cellsKilled = 0
 function resetGame(){
   goku = new Goku(ctx)
   enemies.splice(0, enemies.length)
-  enemySpawner = new EnemySpawner(ctx, enemies)
+  enemySpawner.reset()
   cellsKilled = 0
   document.getElementById("cell_count").innerHTML = cellsKilled
 }

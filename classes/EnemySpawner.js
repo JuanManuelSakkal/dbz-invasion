@@ -17,6 +17,14 @@ class EnemySpawner {
         this.wave = 1
     }
 
+    reset() {
+        this.intervalTimer = 0
+        this.speed = this.initialSpeed
+        this.interval = this.initialInterval
+        this.waveTimer = 0
+        this.wave = 1
+    }
+
     spawnWaves(){
         document.getElementById("wave").innerHTML = this.wave
         this.waveTimer += Time.deltaTime
