@@ -6,10 +6,18 @@ import KameHameHaShot from "./KameHameHaShot"
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "../main"
 import CharacterBase, { State } from "./CharacterBase"
 import CollisionHandler from "./CollisionHandler"
+import BaseForm from "./GokuTransformations/BaseForm"
+import SuperSaiyan from "./GokuTransformations/SuperSaiyan"
 
+export const GokuPhase = {
+    Base: 0,
+    SJJ: 1
+}
 class Goku extends CharacterBase{
     constructor(ctx) {
-        super(ctx, {x: 0, y: 0}, {x: 0, y: 0}, 100, new GokuDrawer(ctx))
+        super(ctx, {x: 0, y: 0}, {x: 1, y: 1}, 100, new GokuDrawer(ctx, {x: 13, y: 117}))
+        this.form = new BaseForm()
+        this.drawer.setFormOffset(this.form.formOffset)
         this.ctx = ctx
         this.timeToCombo = 1000
         this.kameHameHaShot = null
@@ -19,18 +27,32 @@ class Goku extends CharacterBase{
         this.projectileTimer = 0
         this.kameHameHaTimer = 0
         this.kameHameHaChargingTime = 1000
-        this.collisionHandler = new CollisionHandler(this, {x: 42, y: 50})
-        this.kiChargingSpeed = 0.5
+        this.transformingTimer = 0
+        this.transformingDuration = 3000
+        this.transformationTimer = 0
+        this.transformationTime = 0
 
-        //stats
-        this.health = 100
-        this.maxHealth = 100
-        this.ki = 100
-        this.maxKi = 100
+
+        this.collisionHandler = new CollisionHandler(this, {x: 42, y: 50})
+
+        this.setStats()
+
         this.level = 1
         this.experience = 0
         this.experienceToNextLevel = 100
     }
+
+    setStats(){
+        //stats
+        this.maxHealth = this.form.maxHealth
+        this.health = this.maxHealth
+        this.maxKi = this.form.maxKi
+        this.ki = this.maxKi
+        this.kiChargingSpeed = this.form.kiChargingSpeed
+        this.attackDamage = this.form.attackDamage
+        this.maxSpeed = this.form.maxSpeed
+    }
+
     setState(newState){
 
         //move
@@ -70,7 +92,16 @@ class Goku extends CharacterBase{
             this.kameHameHaShot = null
         }
 
+        if(this.state == State.transforming && newState != State.idle){
+            return
+        }
+
         this.state = newState
+    }
+
+    transform(){
+        if(this.level < this.form.nextForm.levelRequired) return
+        this.setState(State.transforming)
     }
 
     levelUp(){
@@ -144,6 +175,16 @@ class Goku extends CharacterBase{
                 this.ki += this.kiChargingSpeed * Time.deltaTime/10
                 this.ki = this.ki > this.maxKi ? this.maxKi : this.ki
                 break
+            case State.transforming:
+                this.transformingTimer += Time.deltaTime
+                if(this.transformingTimer >= this.transformingDuration){
+                    this.setState(State.idle)
+                    this.transformingTimer = 0
+                    this.form = this.form.nextForm
+                    this.drawer.setFormOffset(this.form.formOffset)
+                    this.setStats()
+                }
+                break
         }
 
         this.move()
@@ -195,7 +236,7 @@ class Goku extends CharacterBase{
     }
 
     chargeKameHameHa(){
-        if(this.ki >= KameHameHaShot.kiConsumed){
+        if(this.ki >= KameHameHaShot.kiConsumed && this.level > 2){
             this.setState(State.chargeKameHameHa)
         }
     }
@@ -210,7 +251,7 @@ class Goku extends CharacterBase{
         this.setState(State.baseAttack)
         this.position.x += 10
         enemies.forEach((enemy, index) => {
-            enemy.takeAttack(10)
+            enemy.takeAttack(this.attackDamage)
         })
     }
 
@@ -245,7 +286,7 @@ class Goku extends CharacterBase{
     }
     
     kiShot(){
-        if(this.ki >= KiProjectile.kiConsumed){
+        if(this.ki >= KiProjectile.kiConsumed && this.level > 1){
             this.setState(State.kiShot)
         } else {
             this.setState(State.idle)

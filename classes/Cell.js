@@ -43,6 +43,7 @@ class Cell extends CharacterBase{
     update(){
         switch(this.state){
             case State.movingLeft:
+                this.speed = this.maxSpeed
                 this.move()
                 if(this.position.x < 0){
                     this.reachedEnd = true

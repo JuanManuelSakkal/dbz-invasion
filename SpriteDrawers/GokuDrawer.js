@@ -5,14 +5,26 @@ import GokuKiShotBase from "./GokuKiShotBase"
 import KiProjectileDrawer from "./KiProjectileDrawer"
 import KameHameHaDrawer from "./KameHameHaDrawer"
 import {State} from "../classes/CharacterBase"
+import TransformDrawer from "./TransformDrawer"
 class GokuDrawer{
-    constructor(ctx){
-        this.movementDrawer = new GokuMovementDrawerBase(ctx)
-        this.baseAttacksDrawer = new GokuAttacksDrawerBase(ctx)
-        this.kiUpDrawer = new GokuKiUpDrawerBase(ctx)
-        this.kiShotDrawer = new GokuKiShotBase(ctx)
-        this.kiProjectileDrawer = new KiProjectileDrawer(ctx)
-        this.kameHameHaDrawer = new KameHameHaDrawer(ctx)
+    constructor(ctx, formOffset){
+        this.movementDrawer = new GokuMovementDrawerBase(ctx, formOffset)
+        this.baseAttacksDrawer = new GokuAttacksDrawerBase(ctx, formOffset)
+        this.kiUpDrawer = new GokuKiUpDrawerBase(ctx, formOffset)
+        this.kiShotDrawer = new GokuKiShotBase(ctx, formOffset)
+        this.kiProjectileDrawer = new KiProjectileDrawer(ctx, formOffset)
+        this.kameHameHaDrawer = new KameHameHaDrawer(ctx, formOffset)
+        this.transformDrawer = new TransformDrawer(ctx, formOffset)
+    }
+
+    setFormOffset(formOffset){
+        this.movementDrawer.setOffset(formOffset)
+        this.baseAttacksDrawer.setOffset(formOffset)
+        this.kiUpDrawer.setOffset(formOffset)
+        this.kiShotDrawer.setOffset(formOffset)
+        this.kameHameHaDrawer.setOffset(formOffset)
+        this.kiProjectileDrawer.setOffset(formOffset)
+        this.transformDrawer.setOffset(formOffset)
     }
 
     resetCounters(){
@@ -61,6 +73,9 @@ class GokuDrawer{
                 break
             case State.firingKameHameHaFullCharged:
                 this.kameHameHaDrawer.drawKameHameHaFullCharged(goku)
+                break
+            case State.transforming:
+                this.transformDrawer.drawAnimation(goku)
                 break
         }
     }

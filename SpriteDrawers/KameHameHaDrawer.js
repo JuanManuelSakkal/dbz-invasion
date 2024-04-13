@@ -2,8 +2,8 @@ import GokuDrawerBase from "./GokuDrawerBase"
 import TrailDrawer from "./TrailDrawer"
 
 class KameHameHaDrawer extends GokuDrawerBase {
-    constructor(ctx) {
-        super(ctx, 86, 217)
+    constructor(ctx, formOffset) {
+        super(ctx, formOffset, {x: 73, y: 100})
         this.width = 20
         this.height = 28
         this.smallShotWidth = 28

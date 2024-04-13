@@ -24,6 +24,8 @@ const DOUBLE_TAP_WINDOW = 300
 let lastKeydown = null
 let lastKeyUp = null
 
+let pause = false
+
 let cellsKilled = 0
 
 function resetGame(){
@@ -77,39 +79,41 @@ function draw(){
 
 function update(time){
   Time.setTime(time ?? 0)
-  draw()
+  if(!pause){
+    draw()
 
-  enemySpawner.spawnEnemyOnInterval("cell", 4000)
+    enemySpawner.spawnWaves()
 
-  goku.update()
+    goku.update()
 
-  enemies.forEach((enemy, index) => {
-    enemy.update()
-    enemy.draw()
-    if(enemy.deathTimer > enemy.timeToDisapear || enemy.reachedEnd){
-      if(enemy.reachedEnd){
-        goku.health -= enemy.damage
+    enemies.forEach((enemy, index) => {
+      enemy.update()
+      enemy.draw()
+      if(enemy.deathTimer > enemy.timeToDisapear || enemy.reachedEnd){
+        if(enemy.reachedEnd){
+          goku.health -= enemy.damage
+        }
+        if(enemy.deathTimer > enemy.timeToDisapear ){
+          cellsKilled++
+          goku.gainExperience(enemy.expDrop)
+        }
+        enemies.splice(index, 1)
       }
-      if(enemy.deathTimer > enemy.timeToDisapear ){
-        cellsKilled++
-        goku.gainExperience(enemy.expDrop)
-      }
-      enemies.splice(index, 1)
+      
+    })
+    setHUD(goku)
+    goku.draw()
+    if(goku.health <= 0){
+      alert("You Lost")
+      resetGame()
     }
-    
-  })
-  setHUD(goku)
-  goku.draw()
-  if(goku.health <= 0){
-    alert("You Lost")
-    resetGame()
   }
   window.requestAnimationFrame(update)
 }
 
 function isDoubleTap(e) {
   let isDT = false
-  if(lastKeydown && lastKeydown.key == e.key) {
+/*   if(lastKeydown && lastKeydown.key == e.key) {
     if(e.timeStamp - lastKeydown.timeStamp > DOUBLE_TAP_WINDOW) {
       lastKeydown = e
     } else if(lastKeyUp && lastKeyUp.key == e.key && e.timeStamp - lastKeyUp.timeStamp < DOUBLE_TAP_WINDOW) {
@@ -118,8 +122,13 @@ function isDoubleTap(e) {
     }
   } else{
     lastKeydown = e
-  }
+  } */
   return isDT
+}
+
+function pauseToggle(){
+  console.log(pause)
+  pause = !pause
 }
 
 document.addEventListener('keydown', e => {
@@ -145,6 +154,12 @@ document.addEventListener('keydown', e => {
   }
   if (e.key === 'f') {
       goku.chargeKameHameHa()
+  }
+  if (e.key === 'r') {
+      goku.transform()
+  }
+  if (e.key === 'p') {
+      pauseToggle()
   }
 })
 

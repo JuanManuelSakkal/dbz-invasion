@@ -1,3 +1,5 @@
+import BaseForm from "./GokuTransformations/BaseForm"
+import SuperSaiyan from "./GokuTransformations/SuperSaiyan"
 
 class Particle {
     constructor(emisor) {
@@ -21,7 +23,7 @@ export class EnergySmall extends Particle {
         this.speedX = Math.random() * 0.2
         this.speedY = Math.random() * 0.2
         this.size = Math.random() * 5 + 3
-        this.color = 'rgba(80, 134, 230, 0.2)'
+        this.color = emisor.character.form instanceof BaseForm ? 'rgba(80, 134, 230, 0.2)' : 'rgba(245, 225, 34, 0.2)'
     }
 
     draw(ctx){

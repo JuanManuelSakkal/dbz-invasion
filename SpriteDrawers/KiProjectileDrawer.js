@@ -1,8 +1,8 @@
 import GokuDrawerBase from "./GokuDrawerBase"
 
 class KiProjectileDrawer extends GokuDrawerBase {
-    constructor(ctx) {
-        super(ctx, 62, 227)
+    constructor(ctx, formOffset) {
+        super(ctx, formOffset, { x: 49, y: 110 })
         this.width = 11
         this.height = 8
     }

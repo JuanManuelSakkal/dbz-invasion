@@ -10,7 +10,7 @@ class KiProjectile {
             x: character.position.x + 48,
             y: character.position.y + 18
         }
-        this.damage = 50
+        this.damage = 50 + character.attackDamage
         this.speed = {
             x: 1.3 + character.speed.x,
             y: 0 + character.speed.y

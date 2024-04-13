@@ -3,8 +3,8 @@ import Animator from "../Animator/Animator";
 
 class GokuKiShotBase extends GokuDrawerBase {
 
-    constructor(ctx) {
-        super(ctx, 13, 218)
+    constructor(ctx, formOffset) {
+        super(ctx, formOffset, {x: 0,y: 101})
         this.width = 28
         this.height = 28
         this.sprites = [

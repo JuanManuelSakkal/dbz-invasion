@@ -1,7 +1,7 @@
 import GokuDrawerBase from "./GokuDrawerBase"
 class GokuMovementDrawerBase extends GokuDrawerBase {
-    constructor(ctx) {
-        super(ctx, 13, 117)
+    constructor(ctx, formOffset) {
+        super(ctx, formOffset, {x: 0,y: 0})
         this.row = 1
         this.idleWidth = 19
         this.idleHeight = 29

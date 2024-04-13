@@ -2,8 +2,8 @@ import GokuDrawerBase from "./GokuDrawerBase"
 
 class GokuAttacksDrawerBase extends GokuDrawerBase {
 
-    constructor(ctx) {
-        super(ctx, 13, 150)
+    constructor(ctx, formOffset) {
+        super(ctx, formOffset, {x: 0, y: 33})
         this.attackCounter = 0
         this.attacks = [
             //punch left

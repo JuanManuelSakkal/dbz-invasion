@@ -13,7 +13,7 @@ class KameHameHaShot {
         this.speed = speed
         this.particles = []
         this.isFullCharged = character.state == State.firingKameHameHaFullCharged
-        this.damage = this.isFullCharged ? 100 : 50
+        this.damage = (this.isFullCharged ? 90 : 40) + character.attackDamage
         const size = this.isFullCharged ? {x: 41, y: 39} : {x: 28, y: 25}
         this.collisionHandler = new CollisionHandler(this, size)
     }
