@@ -9,7 +9,7 @@ class SuperSaiyan {
         this.formOffset = {x: 2, y: 498}
         this.attackDamage = 25
         this.nextForm = new SuperSaiyan3
-        this.levelRequired = 1
+        this.levelRequired = 5
     }
 }
 
