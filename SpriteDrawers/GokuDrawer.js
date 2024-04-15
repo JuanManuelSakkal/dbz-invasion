@@ -6,6 +6,7 @@ import KiProjectileDrawer from "./KiProjectileDrawer"
 import KameHameHaDrawer from "./KameHameHaDrawer"
 import {State} from "../classes/CharacterBase"
 import TransformDrawer from "./TransformDrawer"
+import SuperSaiyan4 from "../classes/GokuTransformations/SuperSaiyan4"
 class GokuDrawer{
     constructor(ctx, formOffset){
         this.movementDrawer = new GokuMovementDrawerBase(ctx, formOffset)
@@ -32,8 +33,10 @@ class GokuDrawer{
         this.kiShotDrawer.animator.resetCounters()
     }
 
-    drawProjectile(projectile){
-        this.kiProjectileDrawer.draw(projectile.position.x, projectile.position.y)
+    drawProjectile(projectile, emisor){
+        emisor.form instanceof SuperSaiyan4 ?
+            this.kiProjectileDrawer.drawSuperShot(projectile.position.x, projectile.position.y) :
+            this.kiProjectileDrawer.draw(projectile.position.x, projectile.position.y)
     }
 
     draw(goku){

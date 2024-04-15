@@ -1,4 +1,5 @@
 import SuperSaiyan from "./SuperSaiyan"
+import SuperSaiyan4 from "./SuperSaiyan4"
 
 class BaseForm {
     constructor() {

@@ -1,3 +1,4 @@
+import SuperSaiyan4 from "../classes/GokuTransformations/SuperSaiyan4"
 import GokuDrawerBase from "./GokuDrawerBase"
 
 class GokuAttacksDrawerBase extends GokuDrawerBase {
@@ -67,6 +68,44 @@ class GokuAttacksDrawerBase extends GokuDrawerBase {
                 offset: 235
             }
         ]
+        this.attacksSsj4 = [
+            //punch left
+            {
+                width: 24,
+                height: 29,
+                offset: 0
+            },
+            //punch right
+            {
+                width: 24,
+                height: 29,
+                offset: 24
+            },
+            //elbow
+            {
+                width: 25,
+                height: 29,
+                offset: 130
+            },
+            //kick
+            {
+                width: 25,
+                height: 29,
+                offset: 160
+            },
+            //kick
+            {
+                width: 25,
+                height: 29,
+                offset: 190
+            },
+            //kick
+            {
+                width: 25,
+                height: 29,
+                offset: 219
+            },
+        ]
     }
 
     resetCounters(){
@@ -74,9 +113,10 @@ class GokuAttacksDrawerBase extends GokuDrawerBase {
     }
 
     drawAttack(goku) {
-        let i = this.attackCounter % this.attacks.length
-        this.drawSprite(goku.position.x, goku.position.y, this.spriteOffsetX + this.attacks[i].offset, this.spriteOffsetY, 
-            this.attacks[i].width, this.attacks[i].height, 2)
+        const attacks = goku.form instanceof SuperSaiyan4 ? this.attacksSsj4 : this.attacks
+        let i = this.attackCounter % attacks.length
+        this.drawSprite(goku.position.x, goku.position.y, this.spriteOffsetX + attacks[i].offset, this.spriteOffsetY, 
+            attacks[i].width, attacks[i].height, 2)
     }
 
 }

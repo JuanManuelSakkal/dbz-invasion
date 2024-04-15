@@ -10,6 +10,10 @@ class KiProjectileDrawer extends GokuDrawerBase {
     draw(x, y) {
         this.drawSprite(x, y, this.spriteOffsetX, this.spriteOffsetY, this.width, this.height, 2)
     }
+    
+    drawSuperShot(x, y) {
+        this.drawSprite(x, y, this.spriteOffsetX + 3, this.spriteOffsetY, this.width, this.height, 2)
+    }
 }
 
 export default KiProjectileDrawer

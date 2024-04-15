@@ -4,7 +4,7 @@ import Animator from "../Animator/Animator";
 class TransformDrawer extends GokuDrawerBase{
     constructor(ctx, formOffset) {
         super(ctx, formOffset, {x: 245,y: 65})
-        this.width = 20
+        this.width = 23
         this.height = 30
         this.sprites = []
         this.animator = new Animator(ctx, this)

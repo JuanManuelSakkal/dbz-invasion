@@ -5,6 +5,7 @@ import Goku from './classes/Goku.js'
 import Cell from './classes/Cell.js'
 import Time from './classes/Time.js'
 import EnemySpawner from './classes/EnemySpawner.js'
+import SoundsPlayer from './classes/SoundsPlayer.js'
 
 const canvas = document.getElementById('canvas1')
 const ctx = canvas.getContext('2d')
@@ -23,8 +24,9 @@ const EXP_BAR_ID = "exp"
 const DOUBLE_TAP_WINDOW = 300
 let lastKeydown = null
 let lastKeyUp = null
+let levelUp = true
 
-let pause = false
+let pause = true
 
 let cellsKilled = 0
 
@@ -78,10 +80,48 @@ function draw(){
   //gokuIconsDrawer.drawSprite(0, 0, column, row, 2)
 }
 
+let shouldShowInfo = false
+let infoSrc = "/sprites/Welcome sprite.png"
+function setShowInfo(){
+  shouldShowInfo = false
+  switch(goku.level){
+    case 1:
+      infoSrc = "/sprites/Welcome sprite.png"
+      shouldShowInfo = true
+      break
+    case 2:
+      infoSrc = "/sprites/kishot learned sprite.png"
+      shouldShowInfo = true
+      break
+    case 3:
+      infoSrc = "/sprites/KameHameHa learned sprite.png"
+      shouldShowInfo = true
+      break
+    case 5:
+      infoSrc = "/sprites/Transform sprite.png"
+      shouldShowInfo = true
+      break
+    case 8:
+      infoSrc = "/sprites/Transform sprite.png"
+      shouldShowInfo = true
+      break
+    case 10:
+      infoSrc = "/sprites/Transform sprite.png"
+      shouldShowInfo = true
+      break
+  }
+}
+function showInfo(){
+    const image = new Image()
+    image.src = infoSrc
+    ctx.drawImage(image, 0, 0, 420, 310, 90, 145, 420, 310)
+}
+
 function update(time){
-  Time.setTime(time ?? 0)
+  Time.setTime(time ?? 0)   
+  draw()
   if(!pause){
-    draw()
+    levelUp = false
 
     enemySpawner.spawnWaves()
 
@@ -96,7 +136,12 @@ function update(time){
         }
         if(enemy.deathTimer > enemy.timeToDisapear ){
           cellsKilled++
-          goku.gainExperience(enemy.expDrop)
+          levelUp = goku.gainExperience(enemy.expDrop)
+          if(levelUp) {
+            setShowInfo()
+            if(shouldShowInfo)
+              pauseToggle()
+          }
         }
         enemies.splice(index, 1)
       }
@@ -107,7 +152,10 @@ function update(time){
     if(goku.health <= 0){
       alert("You Lost")
       resetGame()
-    }
+    }       
+  }
+  if(levelUp){
+    showInfo()
   }
   window.requestAnimationFrame(update)
 }
@@ -128,12 +176,21 @@ function isDoubleTap(e) {
 }
 
 function pauseToggle(){
-  console.log(pause)
   pause = !pause
+  if(!pause) {
+    SoundsPlayer.playTheme()
+  } else {
+    SoundsPlayer.playTheme(false)
+  }
 }
 
 document.addEventListener('keydown', e => {
+  if (e.key === 'p') {
+    pauseToggle()
+  }
+  if(pause) return
   const isDT = isDoubleTap(e)
+  
   if (e.key === 'a') {
     isDT ? goku.blinkLeft() : goku.moveLeft()
   }
@@ -159,12 +216,14 @@ document.addEventListener('keydown', e => {
   if (e.key === 'r') {
       goku.transform()
   }
-  if (e.key === 'p') {
-      pauseToggle()
+  if (e.key === 'm') {
+    SoundsPlayer.toggleMute()
   }
 })
 
 document.addEventListener('keyup', e => {
+  
+  if(pause) return
   lastKeyUp = e
   if(e.key === "a" || e.key === "d"){  
     goku.stopX()

@@ -8,11 +8,14 @@ import CharacterBase, { State } from "./CharacterBase"
 import CollisionHandler from "./CollisionHandler"
 import BaseForm from "./GokuTransformations/BaseForm"
 import SuperSaiyan from "./GokuTransformations/SuperSaiyan"
+import SuperSaiyan4 from "./GokuTransformations/SuperSaiyan4"
+import SoundsPlayer from "./SoundsPlayer"
 
 export const GokuPhase = {
     Base: 0,
     SJJ: 1
 }
+
 class Goku extends CharacterBase{
     constructor(ctx) {
         super(ctx, {x: 0, y: 0}, {x: 1, y: 1}, 100, new GokuDrawer(ctx, {x: 13, y: 117}))
@@ -68,14 +71,23 @@ class Goku extends CharacterBase{
         if(this.state == State.kiUp && newState != State.kiUp){
             this.position.x += 22
             this.position.y += 12
+            SoundsPlayer.playKiUp(false)
         }
         if(this.state != State.kiUp && newState == State.kiUp){
             this.position.x -= 22
             this.position.y -= 12
+            SoundsPlayer.playKiUp()
         }
 
         //charging kamehameha
         if(newState == State.chargeKameHameHa && this.state == State.kameHameHaFullCharged) return
+
+        if(newState != State.chargeKameHameHa && newState != State.kameHameHaFullCharged){
+            SoundsPlayer.playKameHameHaCharge(false)
+        }
+        if(newState == State.chargeKameHameHa && this.state != State.chargeKameHameHa){
+            SoundsPlayer.playKameHameHaCharge()
+        }
 
         //firing kamehameha
         if(newState == State.firingKameHameHa){
@@ -85,6 +97,9 @@ class Goku extends CharacterBase{
             }
             if(this.state == State.kameHameHaFullCharged){
                 newState = State.firingKameHameHaFullCharged
+                SoundsPlayer.playKameHameHaBig()
+            }else {
+                SoundsPlayer.playKameHameHaSmall()
             }
         }
 
@@ -117,7 +132,9 @@ class Goku extends CharacterBase{
         this.experience += exp
         if(this.experience >= this.experienceToNextLevel){
             this.levelUp()
+            return true
         }
+        return false
     }
 
     blinkLeft(){
@@ -161,14 +178,17 @@ class Goku extends CharacterBase{
                 if(!this.kameHameHaShot){
                     console.log(this.kameHameHaShot)
                     this.ki -= KameHameHaShot.kiConsumed
-                    this.kameHameHaShot = new KameHameHaShot(this, {x: 57, y: 6}, {x: 5, y: 0})
+                    
+                    this.kameHameHaShot = this.form instanceof SuperSaiyan4 ? 
+                        new KameHameHaShot(this, {x: 62, y: -7}, {x: 5, y: 0}) : new KameHameHaShot(this, {x: 57, y: 6}, {x: 5, y: 0})
                 }
                 break
             case State.firingKameHameHaFullCharged:
                 this.speed.y = 0
                 if(!this.kameHameHaShot){
                     this.ki -= KameHameHaShot.kiConsumed
-                    this.kameHameHaShot = new KameHameHaShot(this, {x: 62, y: -7}, {x: 5, y: 0})
+                    this.kameHameHaShot = this.kameHameHaShot = this.form instanceof SuperSaiyan4 ? 
+                    new KameHameHaShot(this, {x: 62, y: -13}, {x: 5, y: 0}) : new KameHameHaShot(this, {x: 62, y: -7}, {x: 5, y: 0})
                 }
                 break
             case State.kiUp:
@@ -191,7 +211,7 @@ class Goku extends CharacterBase{
         this.projectileTimer += Time.deltaTime
         this.projectiles.forEach((projectile, index) => {
             projectile.update()
-            this.drawer.drawProjectile(projectile)
+            this.drawer.drawProjectile(projectile, this)
             projectile.particles.forEach((particle, index) => {
                 particle.update()
                 if(particle.markedForDeletion)
@@ -232,6 +252,7 @@ class Goku extends CharacterBase{
             this.ki -= KiProjectile.kiConsumed
             this.projectiles.push(new KiProjectile(this))
             this.projectileTimer = 0
+            SoundsPlayer.playKishot()
         }
     }
 
@@ -242,7 +263,9 @@ class Goku extends CharacterBase{
     }
 
     fireKameHameHa(){
-        this.setState(State.firingKameHameHa)
+        if(this.ki >= KameHameHaShot.kiConsumed && this.level > 2){
+            this.setState(State.firingKameHameHa)
+        }
     }
 
     baseAttack(enemies){
@@ -253,6 +276,9 @@ class Goku extends CharacterBase{
         enemies.forEach((enemy, index) => {
             enemy.takeAttack(this.attackDamage)
         })
+        if(enemies.length > 0 ){
+            SoundsPlayer.playPunch()
+        }
     }
 
     setComboTimer(){

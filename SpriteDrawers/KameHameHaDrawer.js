@@ -1,5 +1,5 @@
 import GokuDrawerBase from "./GokuDrawerBase"
-import TrailDrawer from "./TrailDrawer"
+import SuperSaiyan4 from "../classes/GokuTransformations/SuperSaiyan4"
 
 class KameHameHaDrawer extends GokuDrawerBase {
     constructor(ctx, formOffset) {
@@ -10,7 +10,10 @@ class KameHameHaDrawer extends GokuDrawerBase {
         this.smallShotHeight = 25
         this.fullShotWidth = 41
         this.fullShotHeight = 39
+        this.x10ShotWidth = 46
+        this.x10ShotHeight = 41
         this.fullChargeOffsetY = 37
+        this.x10ChargeOffsetY = 79
         this.firingOffsetX = 22
         this.sprites = []
         this.staggerAnim = 150
@@ -26,6 +29,12 @@ class KameHameHaDrawer extends GokuDrawerBase {
             width: 10,
             height: 16
         }
+        this.spriteX10ShotTrail = {
+            offsetX: 541,
+            offsetY: 294,
+            width: 11,
+            height: 20
+        }
         this.smallShotProjectileOffsetX = 57
         this.smallShotProjectileOffsetY = 4
         this.smallShotProjectileWidth = 29
@@ -34,6 +43,13 @@ class KameHameHaDrawer extends GokuDrawerBase {
         this.fullShotProjectileOffsetY = -4
         this.fullShotProjectileWidth = 46
         this.fullShotProjectileHeight = 35
+        
+        this.ssj4FullShotProjectileOffsetX = 76
+
+        this.ssj4X10ProjectileOffsetX = 84
+        this.ssj4X10ProjectileOffsetY = -6
+        this.ssj4X10ProjectileWidth = 47
+        this.ssj4X10ProjectileHeight = 38
     }
 
     drawCharging(goku) {
@@ -42,9 +58,8 @@ class KameHameHaDrawer extends GokuDrawerBase {
     drawFullCharged(goku) {
         this.drawSprite(goku.position.x, goku.position.y, this.spriteOffsetX, this.spriteOffsetY + this.fullChargeOffsetY, this.width, this.height, 2)
     }
-    drawKameHameHa(goku) {
-        this.sprites = this.spritesSmallShot
-        //const trailDrawer = new TrailDrawer(this.ctx, this.spriteSmallShotTrail)
+
+    drawSmallKameHameHa(goku) {
         const firingOffsetX = this.spriteOffsetX + this.firingOffsetX
         
         this.drawSprite(goku.position.x, goku.position.y, firingOffsetX , this.spriteOffsetY, this.width, this.height, 2)
@@ -72,10 +87,9 @@ class KameHameHaDrawer extends GokuDrawerBase {
             2
 
         )
-
     }
-    drawKameHameHaFullCharged(goku) {
-        this.sprites = this.spritesFullShot
+
+    drawBigKameHameHa(goku) {
         
         const firingOffsetX = this.spriteOffsetX + this.firingOffsetX
         const fullChargeOffsetY = this.spriteOffsetY + this.fullChargeOffsetY
@@ -99,13 +113,55 @@ class KameHameHaDrawer extends GokuDrawerBase {
             this.spriteFullShotTrail.height * 2)
 
         this.drawSprite(goku.kameHameHaShot.position.x, goku.kameHameHaShot.position.y, 
-            firingOffsetX + this.fullShotProjectileOffsetX,
+            firingOffsetX + (goku.form instanceof SuperSaiyan4 ? this.ssj4FullShotProjectileOffsetX : this.fullShotProjectileOffsetX),
             fullChargeOffsetY + this.fullShotProjectileOffsetY,
             this.fullShotProjectileWidth,
             this.fullShotProjectileHeight,
             2
 
         )
+    }
+
+    drawKameHameHaX10(goku) {
+        const firingOffsetX = this.spriteOffsetX + this.firingOffsetX + 2
+        const x10ChargeOffsetY = this.spriteOffsetY + this.x10ChargeOffsetY
+
+        this.drawSprite(goku.position.x, goku.position.y, firingOffsetX, x10ChargeOffsetY, this.width + 6, this.height, 2)
+        
+        this.drawSprite(goku.position.x + this.firingOffsetX + this.width + 2, 
+            goku.position.y - 10, 
+            firingOffsetX + this.width + 6, 
+            x10ChargeOffsetY - 6, 
+            this.x10ShotWidth, this.x10ShotHeight, 2)
+
+        const trailScale = (goku.kameHameHaShot.position.x - (goku.position.x + this.firingOffsetX +this.width))  / this.spriteX10ShotTrail.width
+        this.ctx.drawImage(this.image, 
+            this.spriteX10ShotTrail.offsetX, 
+            this.spriteX10ShotTrail.offsetY, 
+            this.spriteX10ShotTrail.width,
+            this.spriteX10ShotTrail.height, 
+            goku.position.x + this.firingOffsetX + this.width + 1 + this.fullShotWidth + 48,
+            goku.position.y + 10, 
+            this.spriteX10ShotTrail.width * trailScale, 
+            this.spriteX10ShotTrail.height * 2)
+
+        this.drawSprite(goku.kameHameHaShot.position.x, goku.kameHameHaShot.position.y, 
+            firingOffsetX + this.ssj4X10ProjectileOffsetX,
+            x10ChargeOffsetY + this.fullShotProjectileOffsetY,
+            this.ssj4X10ProjectileWidth,
+            this.ssj4X10ProjectileHeight,
+            2.5
+
+        )
+        
+    }
+
+
+    drawKameHameHa(goku) {
+        goku.form instanceof SuperSaiyan4 ? this.drawBigKameHameHa(goku) :this.drawSmallKameHameHa(goku)
+    }
+    drawKameHameHaFullCharged(goku) {
+        goku.form instanceof SuperSaiyan4 ? this.drawKameHameHaX10(goku) : this.drawBigKameHameHa(goku)
     }
 
 }

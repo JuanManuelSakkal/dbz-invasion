@@ -3,14 +3,14 @@ class GokuMovementDrawerBase extends GokuDrawerBase {
     constructor(ctx, formOffset) {
         super(ctx, formOffset, {x: 0,y: 0})
         this.row = 1
-        this.idleWidth = 19
+        this.idleWidth = 21
         this.idleHeight = 29
         
-        this.movingRightWidth = 20
+        this.movingRightWidth = 24
         this.movingRightHeight = 28
         this.movingRightOffset = 46
 
-        this.movingLeftWidth = 18
+        this.movingLeftWidth = 21
         this.movingLeftHeight = 28
         this.movingLeftOffset = 71
 
